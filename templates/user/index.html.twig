@@ -60,6 +60,7 @@
         </div>
     </div>
 
+    {{ include('user/contact_us.html.twig') }}
 
 {% endblock %}
 
@@ -81,6 +82,17 @@
                 {"data": "created_at"}
             ]
         });
+
+        function myMap() {
+            var myCenter = new google.maps.LatLng(40.182344, 44.513337);
+            var mapCanvas = document.getElementById("map");
+            var mapOptions = {center: myCenter, zoom: 6};
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var marker = new google.maps.Marker({position:myCenter});
+            marker.setMap(map);
+        }
+
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=myMap"></script>
 
 {% endblock %}

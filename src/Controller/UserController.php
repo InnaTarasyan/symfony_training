@@ -5,16 +5,38 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use PhpParser\Node\Scalar\MagicConst\Dir;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @Route("/user")
  */
 class UserController extends Controller
 {
+     private $mail_to;
+     private $key;
+
+    public function __construct(KernelInterface $kernel)
+    {
+        $this->kernel = $kernel;
+        $envFile = $this->kernel->getProjectDir()."/.env";
+        if (file_exists($envFile)) {
+            (new Dotenv(dirname($envFile)))->load($envFile);
+            $this->mail_to = getenv('MAIL_TO');
+            $this->key = getenv('KEY');
+        }
+    }
+
     /**
      * @Route("/paginate", name="paginate", methods="GET|POST")
      */
@@ -53,12 +75,73 @@ class UserController extends Controller
 
     }
 
+
     /**
+     * @Route("/contact_us", name="contact_us", methods="GET|POST")
+     */
+    public function contact_us(Request $request, \Swift_Mailer $mailer)
+    {
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $text = $request->get('text');
+
+        $validator = Validation::createValidator();
+        $errors = [];
+
+        $nameConstraint = new NotBlank();
+
+        $violations = $validator->validate(
+            $name, $nameConstraint
+        );
+
+        if (count($violations) > 0 ){
+            $errors['name'] = $violations[0]->getMessage();
+        }
+
+        $emailConstraint = array(new Assert\Email(), new NotBlank() );
+
+        $violations = $validator->validate(
+            $email, $emailConstraint
+        );
+
+        if (count($violations) > 0 ) {
+            $errors['email'] = $violations[0]->getMessage();
+        }
+
+        $textConstraint = new NotBlank();
+
+        $violations = $validator->validate(
+            $text, $textConstraint
+        );
+
+        if (count($violations) > 0 ) {
+            $errors['text'] = $violations[0]->getMessage();
+        }
+
+
+        if(count($errors) == 0 ){
+            $message = (new \Swift_Message($name))
+                ->setFrom($email)
+                ->setTo($this->mail_to)
+                ->setBody(
+                    $this->renderView(
+                        'emails/index.html.twig', ['text' => $text]
+                    ),
+                    'text/html'
+                );
+
+            $mailer->send($message);
+        }
+
+        return $this->render('user/index.html.twig', ['errors' => $errors, 'key' => $this->key]);
+    }
+
+        /**
      * @Route("/", name="user_index", methods="GET")
      */
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('user/index.html.twig', ['users' => $userRepository->findAll()]);
+        return $this->render('user/index.html.twig', ['users' => $userRepository->findAll(), 'key' => $this->key]);
     }
 
     /**

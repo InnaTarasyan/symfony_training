@@ -68,7 +68,7 @@ class IndexController extends Controller
         foreach ($apps as $app) {
             $output['data'][] = [
                 'id' => $app->getId(),
-                'name' => $app->getName(),
+                'name' => '<a href="'.$this->generateUrl('applications', array('id' => $app->getId())).'">'.$app->getName().'</a>',
                 'description' => substr($app->getDescription(), 0, 60)."..",
                 'img' => '<img class="myImg" style="max-width: 100px; " title="'.$app->getName().'"  src="images/apps/'.$app->getImg().'"/>',
                 'url' => '<a href="'.$app->getUrl().'">'.$app->getUrl().'</a>',
@@ -154,6 +154,14 @@ class IndexController extends Controller
         }
 
         return $this->render('index/index.html.twig', ['errors' => $errors, 'key' => $this->key]);
+    }
+
+    /**
+     * @Route("applications/{id}", name="applications", methods="GET|POST")
+     */
+    public function applications(Request $request, Applications $applications){
+
+        return $this->render('index/application.html.twig', ['application' => $applications]);
     }
 
 }

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inna Tarasyan HomePage!{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container" style="background-color: white">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="wrap_result"></div>
+                    <div class="w3-container">
+                        <div style="text-align: center">
+                            <div class="site-title text-center ">
+                                <h3> Application   </h3>
+                            </div>
+                            <br/>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <img src="{{ asset('images/apps/') }}{{ application.img}}" title="{{ application.name }}"  class="responsive"  style="max-width: 300px;"/>
+                                </div>
+                                <div class="col-lg-6" style="text-align: left">
+                                   {{ application.description }}
+                                </div>
+                            </div>
+                            <br/>
+                        </div>
+                        <br/>
+                        <div>
+
+                        </div>
+                    </div>
+                    <br/>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}

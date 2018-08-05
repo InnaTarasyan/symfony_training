@@ -1,0 +1,78 @@
+<div class="container">
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- The Close Button -->
+        <span class="close">&times;</span>
+        <!-- Modal Content (The Image) -->
+        <img class="modal-content" id="img01">
+        <!-- Modal Caption (Image Text) -->
+        <div id="caption"></div>
+    </div>
+
+
+    <div class="container">
+        <button onclick="topFunction()" id="topBtn" title="Go to top"> Top </button>
+    </div>
+
+    <div class="site-title text-center ">
+        <h3>Portfolio </h3>
+    </div>
+
+    <ul class="nav nav-tabs" style=" display: flex;justify-content: center;">
+        <li class="active"><a data-toggle="tab" href="#portfolio">Android Applications</a></li>
+        <li><a data-toggle="tab" href="#menu1">Web Applications</a></li>
+    </ul>
+
+    <input type="hidden" id="my_apps" value="{{ path('paginate_apps') }}">
+
+    <div class="tab-content">
+        <div id="portfolio" class="tab-pane fade in active">
+            <p>
+            <div class="container">
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table id="app-list" class="table table-striped" >
+                            <thead>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>Url</th>
+                            <th>Type</th>
+                            <th>Download Count</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </p>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <p>
+            <div class="container">
+                <br/>
+                <div class="table-responsive">
+                    <table id="web-app-table" class="table table-striped" style="width: 100%">
+                        <thead>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Url</th>
+                        <th>Type</th>
+                        <th>Download Count</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </p>
+        </div>
+    </div>
+
+
+</div>

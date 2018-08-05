@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Applications;
+use App\Repository\MenusRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -86,10 +87,11 @@ class IndexController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(MenusRepository $menusRepository)
     {
         return $this->render('index/index.html.twig', [
-            'key' => $this->key
+            'key' => $this->key,
+            'menus' => $menusRepository->findAll()
         ]);
     }
 

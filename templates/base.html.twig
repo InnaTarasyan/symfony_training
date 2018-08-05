@@ -8,7 +8,12 @@
         <meta name="description" content="I am Inna Tarasyan, I am web developer. ">
         <meta name="keywords" content="Inna Tarasyan, Laravel, Freelancer, PHP">
         <meta name="author" content="Inna Tarasyan">
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <link href="{{ absolute_url(asset('css/about_us.css')) }}" rel="stylesheet" />
+            <link href="{{ absolute_url(asset('css/buttons.css')) }}" rel="stylesheet" />
+            <link href="{{ absolute_url(asset('css/home.css')) }}" rel="stylesheet" />
+            <link href="{{ absolute_url(asset('css/timeline.css')) }}" rel="stylesheet" />
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

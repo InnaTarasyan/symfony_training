@@ -180,7 +180,6 @@ class IndexController extends Controller
      */
     public function storeComment(Request $request, ApplicationsRepository $rep){
 
-
         $data = [];
         $data['name'] = $request->get('name');
         $data['email'] = $request->get('email');
@@ -188,6 +187,41 @@ class IndexController extends Controller
         $data['text'] = $request->get('text');
         $data['application_id'] = $request->get('comment_post_ID');
         $data['parent_id'] = $request->get('comment_parent');
+
+
+        $validator = Validation::createValidator();
+        $errors = [];
+
+        $nameConstraint = new NotBlank();
+
+        $violations = $validator->validate(
+            $data['name'], $nameConstraint
+        );
+
+        if (count($violations) > 0 ){
+            $errors['name'] = $violations[0]->getMessage();
+        }
+
+        $emailConstraint = array(new Assert\Email(), new NotBlank() );
+
+        $violations = $validator->validate(
+            $data['email'], $emailConstraint
+        );
+
+        if (count($violations) > 0 ) {
+            $errors['email'] = $violations[0]->getMessage();
+        }
+
+        $textConstraint = new NotBlank();
+
+        $violations = $validator->validate(
+            $data['text'], $textConstraint
+        );
+
+        if (count($violations) > 0 ) {
+            $errors['text'] = $violations[0]->getMessage();
+        }
+
 
         $application = $rep->find($data['application_id']);
 
@@ -213,7 +247,12 @@ class IndexController extends Controller
 
         $view_comment = $this->renderView('index/content_one_comment.html.twig', ['data' => $data]);
 
-        return new JsonResponse(['success' => TRUE, 'comment' => $view_comment, 'data' => $data]);
+        if(count($errors) > 0 ){
+            return new JsonResponse(['success' => FALSE, 'error' => $errors]);
+        } else {
+            return new JsonResponse(['success' => TRUE, 'comment' => $view_comment, 'data' => $data]);
+        }
+
 
     }
 

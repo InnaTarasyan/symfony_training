@@ -30,7 +30,17 @@ jQuery(document).ready(function($) {
                 success: function(html) {
 
                     if(html.error) {
-                        $('.wrap_result').css('color','red').append('<br /><strond>Ошибка: </strong>' + html.error + ('<br />'));
+                        var message = '<br/>';
+                        if(html.error.name){
+                            message+= 'Name: ' + html.error['name']+ '<br/>';
+                        }
+                        if(html.error.email){
+                            message+= 'Email: ' + html.error['email'] + '<br/>';
+                        }
+                        if(html.error.text){
+                            message+= 'Text: ' + html.error['text']+ '<br/>';
+                        }
+                        $('.wrap_result').css('color','red').append('<br /><strond>Ошибка: </strong>' + message + ('<br />'));
                         $('.wrap_result').delay(5000).fadeOut(500);
                     }
                     else if(html.success) {

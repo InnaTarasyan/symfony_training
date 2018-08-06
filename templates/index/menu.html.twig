@@ -13,11 +13,13 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
-                {% for menu in menus %}
-                    <li>
-                        <a href="{{ menu.path }}"> {{ menu.title }}</a>
-                    </li>
-                {% endfor %}
+                {% if menus is defined %}
+                    {% for menu in menus %}
+                        <li>
+                            <a href="{{ menu.path }}"> {{ menu.title }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->

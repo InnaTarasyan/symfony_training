@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Applications;
+use App\Repository\ApplicationsRepository;
 use App\Repository\MenusRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,6 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+
+use App\Entity\Comments;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class IndexController extends Controller
@@ -161,7 +165,56 @@ class IndexController extends Controller
      */
     public function applications(Request $request, Applications $applications){
 
-        return $this->render('index/application.html.twig', ['application' => $applications]);
+        $comments = $applications->getComments();
+
+        $com = [];
+        foreach ($comments as $comment){
+            $com[$comment->getParentId()][] = $comment;
+        }
+
+        return $this->render('index/application.html.twig', ['application' => $applications, 'comments' => $com]);
+    }
+
+    /**
+     * @Route("store_comment", name="store_comment", methods="POST")
+     */
+    public function storeComment(Request $request, ApplicationsRepository $rep){
+
+
+        $data = [];
+        $data['name'] = $request->get('name');
+        $data['email'] = $request->get('email');
+        $data['site'] = $request->get('site');
+        $data['text'] = $request->get('text');
+        $data['application_id'] = $request->get('comment_post_ID');
+        $data['parent_id'] = $request->get('comment_parent');
+
+        $application = $rep->find($data['application_id']);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = new Comments();
+
+        $comment->setName($data['name']);
+        $comment->setEmail($data['email']);
+        $comment->setSite($data['site']);
+        $comment->setText($data['text']);
+        $comment->setApplication($application);
+        $comment->setParentId($data['parent_id']);
+        $comment->setCreatedAt(new \DateTime());
+        $comment->setUpdatedAt(new \DateTime());
+
+        $entityManager->persist($comment);
+
+        $entityManager->flush($comment);
+
+        $data['id'] = $comment->getId();
+        $data['hash'] = md5($data['email']);
+        $data['created_at'] = $comment->getCreatedAt();
+
+        $view_comment = $this->renderView('index/content_one_comment.html.twig', ['data' => $data]);
+
+        return new JsonResponse(['success' => TRUE, 'comment' => $view_comment, 'data' => $data]);
+
     }
 
 }

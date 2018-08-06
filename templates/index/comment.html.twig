@@ -1,0 +1,39 @@
+{%  for item in items %}
+    <li id="li-comment-{{ item.id  }}" class="comment even" >
+        <div id="comment-{{ item.id  }}" class="comment-container" >
+            <div class="comment-author vcard" >
+                <img alt="" src="https://www.gravatar.com/avatar/ {{ item.email }} >?d=mm&s=55" class="avatar" height="55" width="50" />
+                <br/>
+                <cite class="fn"><?= $item['name'] ?></cite>
+            </div>
+            <div class="comment-meta commentmetadata" style="background-color: #f4f4f4; ">
+                <div class="intro">
+                    <div class="commentDate">
+                        <a href="#comment-2">
+                            {{ item.getCreatedAt|date('Y-m-d') }}
+                        </a>
+                        <br/>
+                    </div>
+                    <br/>
+                    <div class="commentNumber">#&nbsp;</div>
+                </div>
+                <br/>
+                <div class="comment-body">
+                    <p> {{ item.text }} </p>
+                </div>
+                <div class="reply group">
+                    <a class="comment-reply-link" href="#respond" onclick="return addComment.moveForm(&quot;comment-{{ item.id }}&quot;,&quot;{{ item.id }}&quot;, &quot;respond&quot;, &quot;{{ item.application.id }}&quot;)">Reply</a>
+                </div>
+            </div>
+        </div>
+
+        {% if com is not empty %}
+            {% if com[item.id] is defined %}
+                <ul class="children">
+                    {% include 'index/comment.html.twig' with {'items': com[item.id]} %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
+    </li>
+{%  endfor %}
